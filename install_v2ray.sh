@@ -5,10 +5,11 @@ systemctl enable docker
 systemctl start docker
 docker pull v2ray/official
 
+wget https://raw.githubusercontent.com/PanQS/v2ray/master/config.json
 
-echo "$config" > /root/config.json
 ## 设置定时任务
 crontab -l >> ./crontab.txt
+sed -i "/reboot/d" ./crontab.txt
 echo "@reboot systemctl start docker && docker run -v /root/config.json:/etc/v2ray/config.json -p 8080:8080  -d   docker.io/v2ray/official:latest >> /dev/null 2>&1" >> ./crontab.txt
 crontab /root/crontab.txt
 
@@ -22,7 +23,7 @@ fi
 
 if [[ "$(uname -r)" == "${kernel_version}" ]]; then
         echo -e "内核已经安装，无需重复执行。"
-        reboot
+#        reboot
         exit 0
 fi
 
@@ -56,4 +57,4 @@ echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
 rm -f kernel-${kernel_version}.rpm
 
 echo "bbrplus安装完成，现在重启."
-reboot
+#reboot
